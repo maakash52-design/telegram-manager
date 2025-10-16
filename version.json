@@ -1,6 +1,1 @@
-{
-  "latest_version": "2.5",
-  "file": "tgm_final_v2.5_universal.py",
-  "url": "https://raw.githubusercontent.com/maakash52-design/telegram-manager/main/tgm_final_v2.5_universal.py",
-  "changelog": "Universal build — Fast Mode, Adaptive Engine, Backup, and Auto Update"
-}
+{ "latest_version": "2.6", "file": "tgm_final_v2.6_aria2_hybrid.py" }
