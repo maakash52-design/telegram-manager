@@ -1024,7 +1024,7 @@ import requests
 DIAG_FILE = MANAGER_DATA / "diagnostics.log"
 UPDATE_URL = "https://raw.githubusercontent.com/maakash52-design/telegram-manager/main/tgm_final_v2.py"
 VERSION_MANIFEST = "https://raw.githubusercontent.com/maakash52-design/telegram-manager/main/version.json"
-CURRENT_VERSION = "2.1"
+CURRENT_VERSION = "2.2"
 
 def write_diag(entry: str):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
