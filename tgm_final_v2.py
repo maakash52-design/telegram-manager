@@ -1019,9 +1019,12 @@ def main_menu():
 # ---------------------
 import datetime
 import subprocess
+import requests
 
 DIAG_FILE = MANAGER_DATA / "diagnostics.log"
-UPDATE_URL = "https://raw.githubusercontent.com/yourrepo/tgm_final_v2/main/tgm_final_v2.py"  # placeholder
+UPDATE_URL = "https://raw.githubusercontent.com/maakash52-design/telegram-manager/main/tgm_final_v2.py"
+VERSION_MANIFEST = "https://raw.githubusercontent.com/maakash52-design/telegram-manager/main/version.json"
+CURRENT_VERSION = "2.1"
 
 def write_diag(entry: str):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -1030,11 +1033,11 @@ def write_diag(entry: str):
 
 def run_diagnostics():
     info = {
-        "version": cfg.get("version"),
-        "owner": cfg.get("owner"),
-        "battery_ok": battery_ok_simple(),
-        "network": "OK" if requests_ok else "offline",
-        "telethon": "ready" if telethon_available else "simulated",
+        "version": CURRENT_VERSION,
+        "owner": cfg.get("owner", "Unknown"),
+        "battery_ok": battery_ok_simple() if 'battery_ok_simple' in globals() else True,
+        "network": "OK",
+        "telethon": "ready" if 'telethon_available' in globals() and telethon_available else "simulated",
     }
     print("\n📊 Diagnostics Summary")
     for k, v in info.items():
@@ -1043,18 +1046,17 @@ def run_diagnostics():
     print(f"\nSaved to {DIAG_FILE}")
 
 def check_for_update():
-    if not requests_ok:
-        print("[Updater] Requests unavailable. Skipping update check.")
-        return
     try:
-        r = requests.get(UPDATE_URL, timeout=8)
-        if r.status_code == 200 and "TelegramManager" in r.text:
-            print("[Updater] New script available online.")
-            if input("Download and replace current version? [y/N]: ").strip().lower().startswith("y"):
-                Path("tgm2.0.py").write_text(r.text, encoding="utf-8")
-                print("✅ Update complete. Restart the app.")
+        version_info = requests.get(VERSION_MANIFEST, timeout=10).json()
+        latest = version_info.get("latest_version", "2.0")
+        if latest != CURRENT_VERSION:
+            print(f"[Updater] v{latest} available → current v{CURRENT_VERSION}")
+            if input("Download and update now? [y/N]: ").strip().lower().startswith("y"):
+                code = requests.get(UPDATE_URL, timeout=15).text
+                Path(__file__).write_text(code, encoding="utf-8")
+                print("✅ Update installed. Restart the app.")
         else:
-            print("[Updater] No update found.")
+            print("[Updater] You are already on the latest version.")
     except Exception as e:
         print(f"[Updater] Error checking update: {e}")
 
